@@ -91,6 +91,9 @@ I hope you enjoy your Neovim journey,
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
 P.S. You can delete this when you're done too. It's your config now! :)
 --]]
+vim.g.db_ui_env_variable_url = 'postgres'
+vim.g.db_ui_env_variable_name = 'test'
+
 vim.cmd [[ autocmd VimEnter * Neotree position=left ]]
 --AUTO RELOAD ON SAVE
 vim.api.nvim_create_autocmd('BufWritePost', {
@@ -186,7 +189,7 @@ vim.api.nvim_set_keymap('i', '<C-M-P>', '<ESC>oPi', { noremap = true })
 
 vim.api.nvim_create_autocmd('VimEnter', {
   callback = function()
-    vim.opt.guicursor = 'n-v-c:ver90,i:block-blinkwait400-blinkoff200-blinkon250,sm:block'
+    vim.opt.guicursor = 'n-v-c:block,i:block-blinkwait400-blinkoff200-blinkon250,sm:block'
   end,
 })
 
@@ -360,14 +363,14 @@ require('lazy').setup({
 
   -- Alternatively, use `config = function() ... end` for full control over the configuration.
   -- If you prefer to call `setup` explicitly, use:
-  --    {
-  --        'lewis6991/gitsigns.nvim',
-  --        config = function()
-  --            require('gitsigns').setup({
-  --                -- Your gitsigns configuration here
-  --            })
-  --        end,
-  --    }
+  {
+    'lewis6991/gitsigns.nvim',
+    config = function()
+      require('gitsigns').setup {
+        -- Your gitsigns configuration here
+      }
+    end,
+  },
   --
   -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`.
@@ -585,6 +588,20 @@ require('lazy').setup({
   {
     -- Main LSP Configuration
     'neovim/nvim-lspconfig',
+    -- opts = {
+    --   servers = { eslint = {} },
+    --   setup = {
+    --     eslint = function()
+    --       require('lazyvim.util').lsp.on_attach(function(client)
+    --         if client.name == 'eslint' then
+    --           client.server_capabilities.documentFormattingProvider = true
+    --         elseif client.name == 'tsserver' then
+    --           client.server_capabilities.documentFormattingProvider = false
+    --         end
+    --       end)
+    --     end,
+    --   },
+    -- },
     dependencies = {
       'saghen/blink.cmp',
       -- Automatically install LSPs and related tools to stdpath for Neovim
@@ -596,7 +613,7 @@ require('lazy').setup({
         config = function()
           require('mason').setup()
           require('mason-lspconfig').setup {
-            ensure_installed = { 'ts_ls', 'lua_ls', 'eslint' },
+            ensure_installed = { 'lua_ls' },
             automatic_installation = true,
           }
 
@@ -604,8 +621,6 @@ require('lazy').setup({
 
           -- Setup tsserver
           lspconfig.ts_ls.setup {}
-
-          -- Setup other servers similarly
         end,
       },
       -- Mason must be loaded before its dependents so we need to set it up here.
@@ -892,28 +907,33 @@ require('lazy').setup({
       },
     },
     opts = {
-      notify_on_error = false,
-      format_on_save = function(bufnr)
-        -- Disable "format_on_save lsp_fallback" for languages that don't
-        -- have a well standardized coding style. You can add additional
-        -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
-        if disable_filetypes[vim.bo[bufnr].filetype] then
-          return nil
-        else
-          return {
-            timeout_ms = 500,
-            lsp_format = 'fallback',
-          }
-        end
-      end,
+      -- notify_on_error = false,
+      -- format_on_save = function(bufnr)
+      --   -- Disable "format_on_save lsp_fallback" for languages that don't
+      --   -- have a well standardized coding style. You can add additional
+      --   -- languages here or re-enable it for the disabled ones.
+      --   local disable_filetypes = { c = true, cpp = true }
+      --   local lsp_format_opt
+      --   if disable_filetypes[vim.bo[bufnr].filetype] then
+      --     lsp_format_opt = 'never'
+      --   else
+      --     lsp_format_opt = 'fallback'
+      --   end
+      --   return {
+      --     timeout_ms = 500,
+      --     lsp_format = lsp_format_opt,
+      --   }
+      -- end,
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
-        -- javascript = { "prettierd", "prettier", stop_after_first = true },
+        javascript = { 'prettier', stop_after_first = true },
+        typescript = { 'prettier', stop_after_first = true },
+        typescriptreact = { 'prettier', stop_after_first = true },
+        javascriptreact = { 'prettier', stop_after_first = true },
       },
     },
   },
@@ -958,6 +978,13 @@ require('lazy').setup({
     config = function()
       -- See `:help cmp`
       local cmp = require 'cmp'
+      cmp.setup.filetype({ 'sql' }, {
+        sources = {
+          { name = 'vim-dadbod-completion' },
+          { name = 'buffer' },
+        },
+      })
+
       local luasnip = require 'luasnip'
       luasnip.config.setup {}
 
@@ -1057,12 +1084,12 @@ require('lazy').setup({
 
       -- vim.cmd.colorscheme 'tokyonight-night'
       -- vim.cmd.colorscheme 'kanagawa'
-      vim.cmd.colorscheme 'material-palenight'
+      -- vim.cmd.colorscheme 'material-deep-ocean'
       -- vim.cmd.colorscheme 'obscure'
       -- vim.cmd.colorscheme 'rose-pine'
+      -- vim.cmd.colorscheme 'e-ink'
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
-
     end,
   },
 
@@ -1109,6 +1136,7 @@ require('lazy').setup({
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
+    event = { 'BufReadPre', 'BufNewFile' },
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
@@ -1117,10 +1145,9 @@ require('lazy').setup({
         'c',
         'diff',
         'html',
+        'css',
         'lua',
         'luadoc',
-        'markdown',
-        'markdown_inline',
         'query',
         'vim',
         'vimdoc',
@@ -1128,7 +1155,15 @@ require('lazy').setup({
         'python',
         'typescript',
         'javascript',
-        -- 'go',
+        'go',
+        'dockerfile',
+        'gitignore',
+        'graphql',
+        'query',
+        'markdown',
+        'markdown_inline',
+        'yaml',
+        'prisma',
       },
       -- Autoinstall languages that are not installed
       auto_install = true,
@@ -1140,10 +1175,10 @@ require('lazy').setup({
         additional_vim_regex_highlighting = { 'ruby' },
       },
       indent = { enable = true, disable = { 'ruby' } },
-      -- custom_captures = {
-      --   -- Highlight the `return` keyword with the `ReturnKeyword` group
-      --   ['@keyword.return'] = 'ReturnKeyword',
-      -- },
+      custom_captures = {
+        -- Highlight the `return` keyword with the `ReturnKeyword` group
+        -- ['@keyword.return'] = 'ReturnKeyword',
+      },
     },
 
     config = function(_, opts)
@@ -1157,10 +1192,9 @@ require('lazy').setup({
       -- with nvim-treesitter. You should go explore a few and see what interests you:
       --
       --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
-      --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
-      --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+      --- Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
+      --- Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     end,
-
   },
 
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
@@ -1184,7 +1218,6 @@ require('lazy').setup({
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
   { import = 'custom.plugins' },
-
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
