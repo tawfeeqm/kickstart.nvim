@@ -1,6 +1,5 @@
 --[[
-
-=====================================================================
+======================================================================
 ==================== READ THIS BEFORE CONTINUING ====================
 =====================================================================
 ========                                    .-----.          ========
@@ -91,10 +90,8 @@ I hope you enjoy your Neovim journey,
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
 P.S. You can delete this when you're done too. It's your config now! :)
 --]]
-vim.g.db_ui_env_variable_url = 'postgres'
-vim.g.db_ui_env_variable_name = 'test'
-
-vim.cmd [[ autocmd VimEnter * Neotree position=left ]]
+vim.opt.conceallevel = 1
+vim.api.nvim_set_keymap('n', ':', '<cmd>FineCmdline<CR>', { noremap = true })
 --AUTO RELOAD ON SAVE
 vim.api.nvim_create_autocmd('BufWritePost', {
   pattern = '*', -- For all files
@@ -183,6 +180,9 @@ vim.api.nvim_set_keymap('i', '<C-]>', '<C-o>$', { noremap = true })
 vim.api.nvim_set_keymap('i', '<C-f>', '<ESC>^', { noremap = true })
 vim.api.nvim_set_keymap('i', '<C-M-p>', '<ESC>opi', { noremap = true })
 vim.api.nvim_set_keymap('i', '<C-M-P>', '<ESC>oPi', { noremap = true })
+vim.api.nvim_set_keymap('i', '<M-->', '–', { noremap = true })
+vim.api.nvim_set_keymap('i', '<M-=>', '—', { noremap = true })
+
 -- Block cursor
 -- vim.opt.guicursor = 'n-v-c:block,i:block-blinkwait700-blinkoff400-blinkon250,sm:block'
 -- vim.opt.guicursor = 'n-v-c:block,i:ver25-blinkon250-blinkoff400-blinkwait700,r:hor20,o:hor50,sm:block-blinkwait175-blinkoff150-blinkon175'
@@ -349,6 +349,7 @@ vim.opt.rtp:prepend(lazypath)
 --  To update plugins you can run
 --    :Lazy update
 --
+vim.o.mouse = 'a'
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
@@ -410,6 +411,11 @@ require('lazy').setup({
       -- delay between pressing a key and opening which-key (milliseconds)
       -- this setting is independent of vim.opt.timeoutlen
       delay = 0,
+      plugins = {
+        spelling = {
+          enabled = true,
+        },
+      },
       icons = {
         -- set icon mappings to true if you have a Nerd Font
         mappings = vim.g.have_nerd_font,
@@ -517,13 +523,39 @@ require('lazy').setup({
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
-        -- pickers = {}
+        defaults = {
+          mappings = {
+            i = { ['<c-enter>'] = 'to_fuzzy_refine' },
+          },
+          vimgrep_arguments = {
+            'rg',
+            '--hidden',
+            '--color=never',
+            '--no-heading',
+            '--with-filename',
+            '--line-number',
+            '--column',
+            '--smart-case',
+          },
+        },
+        pickers = {
+          find_files = {
+            file_ignore_patterns = { '.git' },
+            hidden = true,
+          },
+          live_grep = {
+            file_ignore_patterns = {
+              '.git',
+            },
+            additional_args = function(_)
+              return { '--hidden' }
+            end,
+          },
+        },
         extensions = {
+          file_browser = {
+            theme = 'ivy',
+          },
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
           },
@@ -588,20 +620,11 @@ require('lazy').setup({
   {
     -- Main LSP Configuration
     'neovim/nvim-lspconfig',
-    -- opts = {
-    --   servers = { eslint = {} },
-    --   setup = {
-    --     eslint = function()
-    --       require('lazyvim.util').lsp.on_attach(function(client)
-    --         if client.name == 'eslint' then
-    --           client.server_capabilities.documentFormattingProvider = true
-    --         elseif client.name == 'tsserver' then
-    --           client.server_capabilities.documentFormattingProvider = false
-    --         end
-    --       end)
-    --     end,
-    --   },
-    -- },
+    opts = {
+      servers = {
+        -- eslint = {},
+      },
+    },
     dependencies = {
       'saghen/blink.cmp',
       -- Automatically install LSPs and related tools to stdpath for Neovim
@@ -616,11 +639,6 @@ require('lazy').setup({
             ensure_installed = { 'lua_ls' },
             automatic_installation = true,
           }
-
-          local lspconfig = require 'lspconfig'
-
-          -- Setup tsserver
-          lspconfig.ts_ls.setup {}
         end,
       },
       -- Mason must be loaded before its dependents so we need to set it up here.
@@ -838,8 +856,7 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
-        -- ts_ls = {}
-
+        ts_ls = {},
         lua_ls = {
           -- cmd = { ... },
           -- filetypes = { ... },
@@ -891,7 +908,6 @@ require('lazy').setup({
       }
     end,
   },
-
   { -- Autoformat
     'stevearc/conform.nvim',
     event = { 'BufWritePre' },
@@ -906,6 +922,7 @@ require('lazy').setup({
         desc = '[F]ormat buffer',
       },
     },
+
     opts = {
       -- notify_on_error = false,
       -- format_on_save = function(bufnr)
@@ -934,6 +951,26 @@ require('lazy').setup({
         typescript = { 'prettier', stop_after_first = true },
         typescriptreact = { 'prettier', stop_after_first = true },
         javascriptreact = { 'prettier', stop_after_first = true },
+        sql = { 'sqlfluff' },
+      },
+      formatters = {
+        sqlfluff = {
+          conmmand = 'sqlfluff',
+          args = {
+            'fix',
+            '--dialect',
+            'postgres',
+            '-n',
+            '-',
+          },
+          stdin = true,
+          condition = function()
+            return vim.fn.executable 'sqlfluff' == 1
+          end,
+          cwd = function(ctx)
+            return ctx.dirname or vim.fn.getcwd()
+          end,
+        },
       },
     },
   },
@@ -1066,10 +1103,9 @@ require('lazy').setup({
   { -- You can easily change to a different colorscheme.
     -- Change the name of the colorscheme plugin below, and then
     -- change the command in the config to whatever the name of that colorscheme is.
-    --
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
     'folke/tokyonight.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
+    -- priority = 1000, -- Make sure to load this before all the other start plugins.
     config = function()
       ---@diagnostic disable-next-line: missing-fields
       require('tokyonight').setup {
@@ -1077,17 +1113,19 @@ require('lazy').setup({
           comments = { italic = false }, -- Disable italics in comments
         },
       }
-
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
 
       -- vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'shin'
       -- vim.cmd.colorscheme 'kanagawa'
+      -- vim.cmd.colorscheme 'material-palenight'
       -- vim.cmd.colorscheme 'material-deep-ocean'
       -- vim.cmd.colorscheme 'obscure'
       -- vim.cmd.colorscheme 'rose-pine'
-      -- vim.cmd.colorscheme 'e-ink'
+      -- vim.cmd.colorscheme 'nordfox'
+      -- vim.cmd.colorscheme 'gruvbox-material'
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
     end,
@@ -1117,17 +1155,17 @@ require('lazy').setup({
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
       --  and try some other statusline plugin
-      local statusline = require 'mini.statusline'
+      -- local statusline = require 'mini.statusline'
       -- set use_icons to true if you have a Nerd Font
-      statusline.setup { use_icons = vim.g.have_nerd_font }
+      -- statusline.setup { use_icons = vim.g.have_nerd_font }
 
       -- You can configure sections in the statusline by overriding their
       -- default behavior. For example, here we set the section for
       -- cursor location to LINE:COLUMN
       ---@diagnostic disable-next-line: duplicate-set-field
-      statusline.section_location = function()
-        return '%2l:%-2v'
-      end
+      -- statusline.section_location = function()
+      --   return '%2l:%-2v'
+      -- end
 
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
@@ -1135,12 +1173,14 @@ require('lazy').setup({
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
+    optional = true,
     build = ':TSUpdate',
     event = { 'BufReadPre', 'BufNewFile' },
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
       ensure_installed = {
+        'sql',
         'bash',
         'c',
         'diff',
