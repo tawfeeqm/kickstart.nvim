@@ -622,21 +622,24 @@ require('lazy').setup({
     'neovim/nvim-lspconfig',
     opts = {
       servers = {
-        -- eslint = {},
+        eslint = {
+          settings = {
+            workingDirectories = { mode = 'auto' },
+          },
+        },
       },
     },
     dependencies = {
       'saghen/blink.cmp',
       -- Automatically install LSPs and related tools to stdpath for Neovim
-      { 'williamboman/mason.nvim', config = true }, -- NOTE: Must be loaded before dependants
-      -- { 'williamboman/mason-lspconfig.nvim' },
+      { 'mason-org/mason.nvim', config = true, opts = { ensure_installed = { 'prettier' } } }, -- NOTE: Must be loaded before dependants
       {
-        'williamboman/mason-lspconfig.nvim',
-        dependencies = { 'williamboman/mason.nvim', 'neovim/nvim-lspconfig' },
+        'mason-org/mason-lspconfig.nvim',
+        dependencies = { 'mason-org/mason.nvim', 'neovim/nvim-lspconfig' },
         config = function()
           require('mason').setup()
           require('mason-lspconfig').setup {
-            ensure_installed = { 'lua_ls' },
+            ensure_installed = { 'lua_ls', 'terraformls', 'tflint' },
             automatic_installation = true,
           }
         end,
@@ -654,20 +657,8 @@ require('lazy').setup({
     config = function()
       local capabilities = require('blink.cmp').get_lsp_capabilities()
       require('lspconfig').lua_ls.setup { capabilities = capabilities }
-      -- Mason setup to ensure terraform-ls is installed
-      require('mason-lspconfig').setup {
-        ensure_installed = { 'terraformls', 'tflint' },
-        automatic_installation = {},
-      }
-
-      require('lspconfig').terraformls.setup {}
-      vim.api.nvim_create_autocmd({ 'BufWritePre' }, {
-        pattern = { '*.tf', '*.tfvars' },
-        callback = function()
-          vim.lsp.buf.format()
-        end,
-      })
       vim.keymap.set('n', 'gl', '<cmd>lua vim.diagnostic.open_float()<CR>', { noremap = true })
+
       -- LSP is an initialism you've probably heard, but might not understand what it is.
       --
       -- LSP stands for Language Server Protocol. It's a protocol that helps editors
@@ -754,7 +745,7 @@ require('lazy').setup({
             if vim.fn.has 'nvim-0.11' == 1 then
               return client:supports_method(method, bufnr)
             else
-              return client.supports_method(method, { bufnr = bufnr })
+              return client:supports_method(method, bufnr)
             end
           end
 
@@ -791,11 +782,6 @@ require('lazy').setup({
           -- code, if the language server you are using supports them
           --
           -- This may be unwanted, since they displace some of your code
-          if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
-            map('<leader>th', function()
-              vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
-            end, '[T]oggle Inlay [H]ints')
-          end
         end,
       })
 
@@ -832,7 +818,7 @@ require('lazy').setup({
       --  By default, Neovim doesn't support everything that is in the LSP specification.
       --  When you add nvim-cmp, luasnip, etc. Neovim now has *more* capabilities.
       --  So, we create new capabilities with nvim cmp, and then broadcast that to the servers.
-      local capabilities = vim.lsp.protocol.make_client_capabilities()
+      -- local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
 
       -- Enable the following language servers
@@ -854,9 +840,9 @@ require('lazy').setup({
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
         --    https://github.com/pmizio/typescript-tools.nvim
-        --
         -- But for many setups, the LSP (`tsserver`) will work just fine
-        ts_ls = {},
+        -- ts_ls = {},
+
         lua_ls = {
           -- cmd = { ... },
           -- filetypes = { ... },
@@ -947,11 +933,12 @@ require('lazy').setup({
         -- python = { "isort", "black" },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
-        javascript = { 'prettier', stop_after_first = true },
-        typescript = { 'prettier', stop_after_first = true },
+        javascript = { 'eslint_d', 'prettier', stop_after_first = true },
+        typescript = { 'eslint_d', 'prettier', stop_after_first = true },
         typescriptreact = { 'prettier', stop_after_first = true },
         javascriptreact = { 'prettier', stop_after_first = true },
         sql = { 'sqlfluff' },
+        sh = { 'shfmt' },
       },
       formatters = {
         sqlfluff = {
@@ -1118,7 +1105,9 @@ require('lazy').setup({
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
 
       -- vim.cmd.colorscheme 'tokyonight-night'
-      vim.cmd.colorscheme 'shin'
+      -- vim.cmd.colorscheme 'shin'
+      vim.cmd.colorscheme 'tokyodark'
+      -- vim.cmd.colorscheme 'rose-pine-dawn'
       -- vim.cmd.colorscheme 'kanagawa'
       -- vim.cmd.colorscheme 'material-palenight'
       -- vim.cmd.colorscheme 'material-deep-ocean'
