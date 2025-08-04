@@ -1,0 +1,31 @@
+0000000000000000000000000000000000000000 e88427bcf69cc786f45b0596bab28999321bd4b3 Tawfeeq <tawfeeqmeeri@gmail.com> 1740576817 +0100	branch: Created from HEAD
+e88427bcf69cc786f45b0596bab28999321bd4b3 0b7caa43dc2a269e3e0a0c8b37a388ddfc47d0a4 Tawfeeq <tawfeeqmeeri@gmail.com> 1740577493 +0100	commit: changed cursor to block
+0b7caa43dc2a269e3e0a0c8b37a388ddfc47d0a4 ad4804d39b7662aee35fe5a21e5421fab7e169b9 Tawfeeq <tawfeeqmeeri@gmail.com> 1740577565 +0100	pull (finish): refs/heads/develop onto 314474996cadfb8205a27f20b5258158116f1a7d
+ad4804d39b7662aee35fe5a21e5421fab7e169b9 d25b3799db6ecfd7f063d9d4b5e88829bd6bdc8e Tawfeeq <tawfeeqmeeri@gmail.com> 1740996085 +0100	commit: commented out auto save
+d25b3799db6ecfd7f063d9d4b5e88829bd6bdc8e 198370ae5b0bdcc86ac0c2610b1d74740622cb49 Tawfeeq <tawfeeqmeeri@gmail.com> 1741632969 +0100	commit: uncommented gitsigns
+198370ae5b0bdcc86ac0c2610b1d74740622cb49 1498ee4367e5ff30fcf0adada4c3b468623ef751 Tawfeeq <tawfeeqmeeri@gmail.com> 1742046978 +0100	merge refactor/updating-linting-and-formatting: Fast-forward
+1498ee4367e5ff30fcf0adada4c3b468623ef751 be4bea55fe8178930347f9ee8930b8c5df58cb95 Tawfeeq <tawfeeqmeeri@gmail.com> 1742721631 +0100	commit: added new schemes
+be4bea55fe8178930347f9ee8930b8c5df58cb95 16a11bf08ed7900e65d7439dc794e0f61c0b3541 Tawfeeq <tawfeeqmeeri@gmail.com> 1742979203 +0100	commit: Added completion to dadbod
+16a11bf08ed7900e65d7439dc794e0f61c0b3541 a21357c5ec3f54b5a8754abb3a610035e7a59298 Tawfeeq <tawfeeqmeeri@gmail.com> 1742979213 +0100	commit: Added completiong to dadbod
+a21357c5ec3f54b5a8754abb3a610035e7a59298 b47da42dfe52223ee30f93449d21ec2af68fdd24 Tawfeeq <tawfeeqmeeri@gmail.com> 1742979227 +0100	commit: added dotenv
+b47da42dfe52223ee30f93449d21ec2af68fdd24 109c04d4f72da53e183b24f43652e42e6ef4dc8f Tawfeeq <tawfeeqmeeri@gmail.com> 1743018914 +0100	pull: Fast-forward
+109c04d4f72da53e183b24f43652e42e6ef4dc8f f22df9bbf743854d25344345ebf3f753f9801564 Tawfeeq <tawfeeqmeeri@gmail.com> 1743031140 +0100	pull: Fast-forward
+f22df9bbf743854d25344345ebf3f753f9801564 f90f5456fa67743fcec613d68475fe9e0313606e Tawfeeq <tawfeeqmeeri@gmail.com> 1743035487 +0100	pull: Fast-forward
+f90f5456fa67743fcec613d68475fe9e0313606e c1213440f9165848bfa6e84059f61ae5174fc1bf Tawfeeq <tawfeeqmeeri@gmail.com> 1743084009 +0100	commit: many theme changes
+c1213440f9165848bfa6e84059f61ae5174fc1bf b9199efb566a6997b5292cede43514cb98c10d60 Tawfeeq <tawfeeqmeeri@gmail.com> 1743084075 +0100	pull (finish): refs/heads/develop onto 2730fd29b881a5824748cb6a1ff5843c8ca30b3a
+b9199efb566a6997b5292cede43514cb98c10d60 fbbbd26e086db0e2efb1a2a31e317ca2a599ce4e Tawfeeq <tawfeeqmeeri@gmail.com> 1743497826 +0200	commit: more stuff
+fbbbd26e086db0e2efb1a2a31e317ca2a599ce4e 67ce1adc7f1dfda85a201650e0429cffd384ddcd Tawfeeq <tawfeeqmeeri@gmail.com> 1743592507 +0200	pull: Fast-forward
+67ce1adc7f1dfda85a201650e0429cffd384ddcd eaefbf87506a950adcdf36a7bf2968316cd31766 Tawfeeq <tawfeeqmeeri@gmail.com> 1743612480 +0200	pull: Fast-forward
+eaefbf87506a950adcdf36a7bf2968316cd31766 81a1084b24f670c23d02d0ea15b52c254d291041 Tawfeeq <tawfeeqmeeri@gmail.com> 1743818494 +0200	commit: themes and lualine
+81a1084b24f670c23d02d0ea15b52c254d291041 9f9d663f0b499e65f89127e82d9515d74ee5cf57 Tawfeeq <tawfeeqmeeri@gmail.com> 1743818505 +0200	pull (finish): refs/heads/develop onto fd7c1e50922d24eb72edba4d1e3fe0e6d36767c1
+9f9d663f0b499e65f89127e82d9515d74ee5cf57 ffdb9eb0e55aaf506cff2abf2be013bdb46a1ce5 Tawfeeq <tawfeeqmeeri@gmail.com> 1743941350 +0200	commit: updated bufferline
+ffdb9eb0e55aaf506cff2abf2be013bdb46a1ce5 7f7e10657c105755cb2deab78bda96b1ccdc0045 Tawfeeq <tawfeeqmeeri@gmail.com> 1744639940 +0200	commit: obsidian
+7f7e10657c105755cb2deab78bda96b1ccdc0045 4fe0e2df2ed189382b1dc3e537a8c4d99f7afa38 Tawfeeq <tawfeeqmeeri@gmail.com> 1744640689 +0200	pull: Fast-forward
+4fe0e2df2ed189382b1dc3e537a8c4d99f7afa38 e9d73e22490ca76f6dda8b8257546d34187269e6 Tawfeeq <tawfeeqmeeri@gmail.com> 1744880826 +0200	commit: obsidian and update to telescope for hidden files
+e9d73e22490ca76f6dda8b8257546d34187269e6 a4b3ca3a828073067c7bcc8f35d34250783a6725 Tawfeeq <tawfeeqmeeri@gmail.com> 1745585352 +0200	commit: update obsidian
+a4b3ca3a828073067c7bcc8f35d34250783a6725 f9c03f815f4e90e23fb8eb1188464d1854d7a8a3 Tawfeeq <tawfeeqmeeri@gmail.com> 1751013574 +0200	commit: Added spelling plugin?
+f9c03f815f4e90e23fb8eb1188464d1854d7a8a3 f3e91757aa48755ad3979ef18bfd780a2331dc56 Tawfeeq <tawfeeqmeeri@gmail.com> 1752662918 +0200	commit: added onedark
+f3e91757aa48755ad3979ef18bfd780a2331dc56 dc8d5805b7be4cffa35cb34caa614af6010e7e91 Tawfeeq <tawfeeqmeeri@gmail.com> 1753700625 +0200	commit: Updated bufferline
+dc8d5805b7be4cffa35cb34caa614af6010e7e91 cb6a5e30d1443181a690525b1ea5e9c4c9294cd5 Tawfeeq <tawfeeqmeeri@gmail.com> 1753700633 +0200	commit: Added yazi
+cb6a5e30d1443181a690525b1ea5e9c4c9294cd5 ab27bfcc685ea21acecc3d60d9f0d805d10a5f42 Tawfeeq <tawfeeqmeeri@gmail.com> 1753700667 +0200	commit: Updated mason's
+ab27bfcc685ea21acecc3d60d9f0d805d10a5f42 dac577852d95face69ecde212b1505e883ec6ad4 Tawfeeq <tawfeeqmeeri@gmail.com> 1753808469 +0200	commit: updated lsp: typescript-tools

@@ -1,0 +1,14 @@
+0000000000000000000000000000000000000000 8d05a545d158471385181de03bd8015b7a848b9d Tawfeeq <tawfeeq@tawfeeqs-mbp.speedport_w_724v_typ_a_05011603_06_003> 1738742707 +0100	clone: from github.com:tawfeeqm/kickstart.nvim.git
+8d05a545d158471385181de03bd8015b7a848b9d ed9ef123c198e6e075b71148d515a986cb7a688c Tawfeeq <tawfeeq@tawfeeqs-mbp.speedport_w_724v_typ_a_05011603_06_003> 1738796435 +0100	pull: Fast-forward
+ed9ef123c198e6e075b71148d515a986cb7a688c 770feee4707a1f04e980d141d3d7f3eeb5457594 Tawfeeq <tawfeeq@tawfeeqs-mbp.speedport_w_724v_typ_a_05011603_06_003> 1738970494 +0100	pull: Fast-forward
+770feee4707a1f04e980d141d3d7f3eeb5457594 e88427bcf69cc786f45b0596bab28999321bd4b3 Tawfeeq <tawfeeq@tawfeeqs-mbp.speedport_w_724v_typ_a_05011603_06_003> 1739202172 +0100	commit: fixed lualine config and neotree startup
+e88427bcf69cc786f45b0596bab28999321bd4b3 7a658e66aa9fe6656e6f489f4cd55b583df80daf Tawfeeq <tawfeeq@tawfeeqs-mbp.speedport_w_724v_typ_a_05011603_06_003> 1739221261 +0100	commit: added tommorow night, fixed neotree focus
+7a658e66aa9fe6656e6f489f4cd55b583df80daf bdff9784921a7833da97668429448afa4c3b4b8b Tawfeeq <tawfeeq@Tawfeeqs-MacBook-Pro.local> 1740170918 +0100	commit: new themes
+bdff9784921a7833da97668429448afa4c3b4b8b 30e69c3058e15fa9ccec377cdf8315f2eff91d7a Tawfeeq <tawfeeqmeeri@gmail.com> 1740575594 +0100	commit: removed extra conform package
+30e69c3058e15fa9ccec377cdf8315f2eff91d7a 34e7d29aa7b6e95cf09d62baf4c9082db5b129c0 Tawfeeq <tawfeeqmeeri@gmail.com> 1740575649 +0100	pull (finish): refs/heads/master onto 34e7d29aa7b6e95cf09d62baf4c9082db5b129c0
+34e7d29aa7b6e95cf09d62baf4c9082db5b129c0 dfc90b9e6d9e2da1fd5b9d6143221d33251cad00 Tawfeeq <tawfeeqmeeri@gmail.com> 1740575824 +0100	revert: Revert "Propsed fix for init.lua warnings as per https://github.com/nvim-lua/kickstart.nvim/issues/1305#issuecomment-2657770325 (#1354)"
+dfc90b9e6d9e2da1fd5b9d6143221d33251cad00 34e7d29aa7b6e95cf09d62baf4c9082db5b129c0 Tawfeeq <tawfeeqmeeri@gmail.com> 1740575882 +0100	reset: moving to HEAD~1
+34e7d29aa7b6e95cf09d62baf4c9082db5b129c0 ea60b2b01f3931cb0bb0ab746ccb65107a8c55cd Tawfeeq <tawfeeqmeeri@gmail.com> 1740575895 +0100	reset: moving to HEAD~1
+ea60b2b01f3931cb0bb0ab746ccb65107a8c55cd 34e7d29aa7b6e95cf09d62baf4c9082db5b129c0 Tawfeeq <tawfeeqmeeri@gmail.com> 1740576512 +0100	rebase (finish): refs/heads/master onto 34e7d29aa7b6e95cf09d62baf4c9082db5b129c0
+34e7d29aa7b6e95cf09d62baf4c9082db5b129c0 a8b4dd598aba1cd93e8c63f6f56aa0b2534eeefa Tawfeeq <tawfeeqmeeri@gmail.com> 1741671327 +0100	pull: Fast-forward
+a8b4dd598aba1cd93e8c63f6f56aa0b2534eeefa 0ba868f4cffc2ae96378e6c713bdb8b4fcd42a86 Tawfeeq <tawfeeqmeeri@gmail.com> 1742721679 +0100	merge develop: Merge made by the 'ort' strategy.

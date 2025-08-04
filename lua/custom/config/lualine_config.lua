@@ -68,13 +68,17 @@ end
 
 -- Left components
 ins_left {
-  function() return '▊' end,
+  function()
+    return '▊'
+  end,
   color = { fg = colors.blue },
   padding = { left = 0, right = 1 },
 }
 
 ins_left {
-  function() return '' end,
+  function()
+    return ''
+  end,
   color = function()
     local mode_color = {
       n = colors.red,
@@ -108,12 +112,12 @@ ins_left {
   'filename',
   cond = conditions.buffer_not_empty,
   color = { fg = colors.magenta, gui = 'bold' },
-  path = 1,  -- Show relative path (2-3 parent directories)
+  path = 1, -- Show relative path (2-3 parent directories)
 }
 
 ins_left {
   function()
-    local buf_count = #vim.fn.getbufinfo({buflisted = 1})
+    local buf_count = #vim.fn.getbufinfo { buflisted = 1 }
     return 'Buffers: ' .. buf_count
   end,
   color = { fg = colors.cyan },
@@ -133,14 +137,20 @@ ins_left {
   },
 }
 
-ins_left { function() return '%=' end }
+ins_left {
+  function()
+    return '%='
+  end,
+}
 
 ins_left {
   function()
     local msg = 'No Active Lsp'
     local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
-    local clients = vim.lsp.get_active_clients()
-    if next(clients) == nil then return msg end
+    local clients = vim.lsp.get_clients()
+    if next(clients) == nil then
+      return msg
+    end
     for _, client in ipairs(clients) do
       local filetypes = client.config.filetypes
       if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
@@ -186,7 +196,9 @@ ins_right {
 }
 
 ins_right {
-  function() return '▊' end,
+  function()
+    return '▊'
+  end,
   color = { fg = colors.blue },
   padding = { left = 1 },
 }
