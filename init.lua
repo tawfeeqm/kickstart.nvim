@@ -90,8 +90,19 @@ I hope you enjoy your Neovim journey,
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
 P.S. You can delete this when you're done too. It's your config now! :)
 --]]
+vim.o.swapfile = false
 vim.opt.conceallevel = 1
-vim.api.nvim_set_keymap('n', ':', '<cmd>FineCmdline<CR>', { noremap = true })
+vim.keymap.set('n', ':', function()
+  if vim.fn.exists ':FineCmdline' == 2 then
+    local ok = pcall(function()
+      vim.cmd 'FineCmdline'
+    end)
+    if ok then
+      return
+    end
+  end
+  vim.api.nvim_feedkeys(':', 'n', false)
+end, { noremap = true, silent = true })
 --AUTO RELOAD ON SAVE
 vim.api.nvim_create_autocmd('BufWritePost', {
   pattern = '*', -- For all files
@@ -119,9 +130,9 @@ vim.api.nvim_create_autocmd({ 'FileChangedShellPost' }, {
 })
 
 vim.lsp.inlay_hint.enable()
--- vim.opt.tabstop = 2
--- vim.opt.shiftwidth = 2
--- vim.opt.softtabstop = 2
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.softtabstop = 2
 vim.opt.expandtab = true
 -- Function to toggle transparency
 
@@ -174,9 +185,9 @@ vim.api.nvim_create_autocmd('BufEnter', {
 -- Refresh Neovim
 vim.api.nvim_set_keymap('n', '<leader>rr', ':lua os.exit(1)<CR>', { noremap = true, silent = true })
 -- Add custom key bindings
-vim.api.nvim_set_keymap('i', '<C-j>', '<Right>', { noremap = true })
-vim.api.nvim_set_keymap('i', '<C-g>', '<Left>', { noremap = true })
-vim.api.nvim_set_keymap('i', '<C-]>', '<C-o>$', { noremap = true })
+-- vim.api.nvim_set_keymap('i', '<C-j>', '<Right>', { noremap = true })
+-- vim.api.nvim_set_keymap('i', '<C-g>', '<Left>', { noremap = true })
+-- -- vim.api.nvim_set_keymap('i', '<C-]>', '<C-o>$', { noremap = true })
 vim.api.nvim_set_keymap('i', '<C-f>', '<ESC>^', { noremap = true })
 vim.api.nvim_set_keymap('i', '<C-M-p>', '<ESC>opi', { noremap = true })
 vim.api.nvim_set_keymap('i', '<C-M-P>', '<ESC>oPi', { noremap = true })
@@ -283,6 +294,7 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+vim.keymap.set('n', 'gl', '<cmd>lua vim.diagnostic.open_float()<CR>', { noremap = true })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -356,8 +368,8 @@ vim.o.mouse = 'a'
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
-  'NMAC427/guess-indent.nvim', -- Detect tabstop and shiftwidth automatically
-
+  -- 'NMAC427/guess-indent.nvim',
+  'tpope/vim-sleuth',
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
   -- keys can be used to configure plugin behavior/loading/etc.
@@ -863,20 +875,20 @@ require('lazy').setup({
     },
     opts = {
       notify_on_error = false,
-      format_on_save = function(bufnr)
-        -- Disable "format_on_save lsp_fallback" for languages that don't
-        -- have a well standardized coding style. You can add additional
-        -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
-        if disable_filetypes[vim.bo[bufnr].filetype] then
-          return nil
-        else
-          return {
-            timeout_ms = 500,
-            lsp_format = 'fallback',
-          }
-        end
-      end,
+      -- format_on_save = function(bufnr)
+      -- Disable "format_on_save lsp_fallback" for languages that don't
+      -- have a well standardized coding style. You can add additional
+      -- languages here or re-enable it for the disabled ones.
+      --   local disable_filetypes = { c = true, cpp = true }
+      --   if disable_filetypes[vim.bo[bufnr].filetype] then
+      --     return nil
+      --   else
+      --     return {
+      --       timeout_ms = 500,
+      --       lsp_format = 'fallback',
+      --     }
+      --   end
+      -- end,
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
@@ -885,8 +897,9 @@ require('lazy').setup({
         --
         go = { 'gofmt' },
         -- You can use 'stop_after_first' to run the first available formatter from the list
-        javascript = { 'prettierd', 'prettier', stop_after_first = true },
-        typescript = { 'prettierd', 'prettier', stop_after_first = true },
+        javascript = { 'eslint_d', 'prettierd', 'prettier', stop_after_first = true },
+        typescript = { 'eslint_d', 'prettierd', 'prettier', stop_after_first = true },
+        vue = { 'eslint_d' },
       },
     },
   },
