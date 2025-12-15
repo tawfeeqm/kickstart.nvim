@@ -35,10 +35,14 @@ local config = {
   options = {
     component_separators = '',
     section_separators = '',
-    theme = {
-      normal = { c = { fg = colors.fg, bg = colors.bg } },
-      inactive = { c = { fg = colors.fg, bg = colors.bg } },
-    },
+    icons_enabled = true,
+    theme = 'auto',
+    -- {
+    -- normal = { c = { fg = colors.fg, bg = colors.bg } },
+    -- inactive = { c = { fg = colors.fg, bg = colors.bg } },
+    -- },
+    always_show_tabline = true,
+    always_divide_middle = true,
   },
   sections = {
     lualine_a = {},
@@ -71,7 +75,7 @@ ins_left {
   function()
     return '▊'
   end,
-  color = { fg = colors.blue },
+  color = { fg = colors.cyan },
   padding = { left = 0, right = 1 },
 }
 
@@ -107,25 +111,25 @@ ins_left {
   padding = { right = 1 },
 }
 
--- THIS IS THE MODIFIED COMPONENT (shows path)
+-- -- THIS IS THE MODIFIED COMPONENT (shows path)
 ins_left {
   'filename',
   cond = conditions.buffer_not_empty,
-  color = { fg = colors.magenta, gui = 'bold' },
+  color = { fg = colors.yellow, gui = 'bold' },
   path = 1, -- Show relative path (2-3 parent directories)
 }
-
+--
 ins_left {
   function()
     local buf_count = #vim.fn.getbufinfo { buflisted = 1 }
     return 'Buffers: ' .. buf_count
   end,
-  color = { fg = colors.cyan },
+  -- color = { fg = colors.cyan },
 }
-
+--
 ins_left { 'location' }
 ins_left { 'progress', color = { fg = colors.fg, gui = 'bold' } }
-
+--
 ins_left {
   'diagnostics',
   sources = { 'nvim_diagnostic' },
@@ -136,7 +140,7 @@ ins_left {
     info = { fg = colors.cyan },
   },
 }
-
+--
 ins_left {
   function()
     return '%='
@@ -160,7 +164,7 @@ ins_left {
     return msg
   end,
   icon = ' LSP:',
-  color = { fg = '#ffffff', gui = 'bold' },
+  -- color = { fg = '#ffffff', gui = 'bold' },
 }
 
 -- Right components
@@ -181,7 +185,7 @@ ins_right {
 ins_right {
   'branch',
   icon = '',
-  color = { fg = colors.violet, gui = 'bold' },
+  color = { fg = colors.yellow, gui = 'bold' },
 }
 
 ins_right {
@@ -199,7 +203,7 @@ ins_right {
   function()
     return '▊'
   end,
-  color = { fg = colors.blue },
+  color = { fg = colors.cyan},
   padding = { left = 1 },
 }
 
