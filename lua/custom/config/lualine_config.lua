@@ -115,7 +115,7 @@ ins_left {
 ins_left {
   'filename',
   cond = conditions.buffer_not_empty,
-  color = { fg = colors.yellow, gui = 'bold' },
+  color = { fg = colors.v, gui = 'bold' },
   path = 1, -- Show relative path (2-3 parent directories)
 }
 --
@@ -185,7 +185,7 @@ ins_right {
 ins_right {
   'branch',
   icon = '',
-  color = { fg = colors.yellow, gui = 'bold' },
+  color = { fg = colors.fg, gui = 'bold' },
 }
 
 ins_right {
