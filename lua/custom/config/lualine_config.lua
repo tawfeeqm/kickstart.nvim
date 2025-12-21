@@ -115,7 +115,7 @@ ins_left {
 ins_left {
   'filename',
   cond = conditions.buffer_not_empty,
-  color = { fg = colors.v, gui = 'bold' },
+  color = { fg = colors.fg, gui = 'bold' },
   path = 1, -- Show relative path (2-3 parent directories)
 }
 --
