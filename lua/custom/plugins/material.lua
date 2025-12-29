@@ -1,76 +1,148 @@
 -- ~/.config/nvim/lua/plugins.lua
-
 return {
   'marko-cerovac/material.nvim',
   priority = 1000,
   opts = {
-    -- 1. Disable Italics globally as requested
+    --------------------------------------------------
+    -- 1. Disable italics everywhere
+    --------------------------------------------------
     styles = {
       comments = { italic = false },
       strings = { italic = false },
       keywords = { italic = false },
       functions = { italic = false },
       variables = { italic = false },
+      types = { italic = false },
+      operators = { italic = false },
     },
 
-    -- 2. Custom Colors: Force the Black Background
+    --------------------------------------------------
+    -- 2. Dimmed black background (NOT pure black)
+    --------------------------------------------------
     custom_colors = function(colors)
-      colors.editor.bg = '#000000'
-      colors.editor.contrast = '#000000'
-      colors.main.black = '#000000'
-      -- Ensure the cursor color variable doesn't override our manual setting
+      local BG = '#0B0E14'
+
+      colors.editor.bg       = BG
+      colors.editor.contrast = BG
+      colors.main.black      = BG
+
       colors.editor.cursor = '#FFFFFF'
     end,
 
-    -- 3. Custom Highlights: The Fixes
+    --------------------------------------------------
+    -- 3. Comprehensive highlight overrides
+    --------------------------------------------------
     custom_highlights = {
-      -- CURSOR: Make it a White block with Black text
-      Cursor = { bg = '#FFFFFF', fg = '#000000' },
-      TermCursor = { bg = '#FFFFFF', fg = '#000000' },
+      --------------------------------------------------
+      -- TYPE NAMES (class, interface, struct, enum)
+      --------------------------------------------------
+      ['@type'] = { fg = '#89B4FA' },
+      ['@type.definition'] = { fg = '#89B4FA' },
+      ['@type.typescript'] = { fg = '#89B4FA' },
+      ['@type.javascript'] = { fg = '#89B4FA' },
+      ['@type.cpp'] = { fg = '#89B4FA' },
 
-      -- CLASS KEYWORD: Purple (#C792EA)
-      -- The theme source defaults StorageClass to Cyan, so we MUST override it here.
-      StorageClass = { fg = '#C792EA' },
-      ['@keyword.storage'] = { fg = '#C792EA' },
-      ['@storageclass'] = { fg = '#C792EA' },
+      -- LSP semantic types (TS)
+      ['@lsp.type.class'] = { fg = '#89B4FA' },
+      ['@lsp.type.class.typescript'] = { fg = '#89B4FA' },
+      ['@lsp.typemod.class.declaration'] = { fg = '#89B4FA' },
+      ['@lsp.typemod.class.declaration.typescript'] = { fg = '#89B4FA' },
 
-      -- FUNCTION NAMES: Blue (#82AAFF)
-      -- Force all variations of functions/methods to be blue
+      --------------------------------------------------
+      -- TYPE KEYWORDS (class, struct, interface, enum)
+      --------------------------------------------------
+      ['@keyword.type'] = { fg = '#C792EA' },
+      ['@keyword.type.typescript'] = { fg = '#C792EA' },
+      ['@keyword.type.javascript'] = { fg = '#C792EA' },
+      ['@keyword.type.cpp'] = { fg = '#C792EA' },
+
+      --------------------------------------------------
+      -- ASYNC / AWAIT
+      --------------------------------------------------
+      ['@keyword.coroutine'] = { fg = '#C792EA' },
+      ['@keyword.coroutine.typescript'] = { fg = '#C792EA' },
+
+      --------------------------------------------------
+      -- RETURN
+      --------------------------------------------------
+      ['@keyword.return'] = { fg = '#FF5370' },
+
+      --------------------------------------------------
+      -- FUNCTIONS / METHODS
+      --------------------------------------------------
       Function = { fg = '#82AAFF' },
       ['@function'] = { fg = '#82AAFF' },
       ['@function.call'] = { fg = '#82AAFF' },
       ['@function.method'] = { fg = '#82AAFF' },
       ['@function.method.call'] = { fg = '#82AAFF' },
       ['@method'] = { fg = '#82AAFF' },
+      ['@function.method.cpp'] = { fg = '#82AAFF' },
 
-      -- CONSTRUCTOR: Purple (#C792EA)
+      --------------------------------------------------
+      -- CONSTRUCTORS
+      --------------------------------------------------
       ['@constructor'] = { fg = '#C792EA' },
 
-      -- RETURN KEYWORD: Red (#FF5370)
-      ['@keyword.return'] = { fg = '#FF5370' },
-
-      -- PROPERTIES: White (#FFFFFF)
-      -- The text after the dot (e.g. .log, .getElementById)
+      --------------------------------------------------
+      -- PROPERTIES / MEMBERS
+      --------------------------------------------------
       ['@property'] = { fg = '#FFFFFF' },
       ['@variable.member'] = { fg = '#FFFFFF' },
       ['@field'] = { fg = '#FFFFFF' },
 
-      -- STRINGS: Green (#C3E88D)
+      --------------------------------------------------
+      -- PARAMETERS
+      --------------------------------------------------
+      ['@variable.parameter'] = { fg = '#FFFFFF' },
+
+      --------------------------------------------------
+      -- STRINGS
+      --------------------------------------------------
       String = { fg = '#C3E88D' },
       ['@string'] = { fg = '#C3E88D' },
 
-      -- QUOTATION MARKS: Cyan (#89DDFF)
-      -- This targets the specific quote characters surrounding the string
-      ['@punctuation.quote'] = { fg = '#89DDFF' },
-      ['@string.delimiter'] = { fg = '#89DDFF' },
+      --------------------------------------------------
+      -- NUMBERS
+      --------------------------------------------------
+      Number = { fg = '#F78C6C' },
+      ['@number'] = { fg = '#F78C6C' },
+
+      --------------------------------------------------
+      -- C++ SPECIFIC
+      --------------------------------------------------
+      ['@namespace.cpp'] = { fg = '#89B4FA' },
+      ['@macro.cpp'] = { fg = '#C792EA' },
+      ['@keyword.directive.cpp'] = { fg = '#C792EA' },
+      ['@string.special.include.cpp'] = { fg = '#C3E88D' },
+
+      --------------------------------------------------
+      -- DIAGNOSTICS
+      --------------------------------------------------
+      DiagnosticError = { fg = '#FF5370' },
+      DiagnosticWarn  = { fg = '#FFCB6B' },
+      DiagnosticInfo  = { fg = '#FFCB6B' },
+      DiagnosticHint  = { fg = '#FFCB6B' },
+
+      DiagnosticFloatingError = { fg = '#FF5370' },
+      DiagnosticFloatingWarn  = { fg = '#FFCB6B' },
+      DiagnosticFloatingInfo  = { fg = '#FFCB6B' },
+      DiagnosticFloatingHint  = { fg = '#FFCB6B' },
+
+      DiagnosticVirtualTextError = { fg = '#FF5370' },
+      DiagnosticVirtualTextWarn  = { fg = '#FFCB6B' },
+      DiagnosticVirtualTextInfo  = { fg = '#FFCB6B' },
+      DiagnosticVirtualTextHint  = { fg = '#FFCB6B' },
+
+      DiagnosticUnderlineError = { sp = '#FF5370', undercurl = true },
+      DiagnosticUnderlineWarn  = { sp = '#FFCB6B', undercurl = true },
+      DiagnosticUnderlineInfo  = { sp = '#FFCB6B', undercurl = true },
+      DiagnosticUnderlineHint  = { sp = '#FFCB6B', undercurl = true },
     },
   },
-  config = function(_, opts)
-    require('material').setup(opts)
 
-    -- Important: Set the style to 'deep ocean' before loading the scheme
-    -- to get the correct base palette before our overrides.
+  config = function(_, opts)
     vim.g.material_style = 'deep ocean'
-    vim.cmd 'colorscheme material'
+    require('material').setup(opts)
+    vim.cmd.colorscheme('material')
   end,
 }
