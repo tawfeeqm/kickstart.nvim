@@ -9,7 +9,7 @@ return {
         -- VARIABLES (ALL LANGUAGES)
         --------------------------------------------------
         ['@variable.member'] = { fg = red },
-        -- ['@variable.parameter'] = { fg = red },
+        ['@variable.parameter'] = { fg = red },
 
         --------------------------------------------------
         -- RETURN KEYWORD (ALL LANGUAGES)
