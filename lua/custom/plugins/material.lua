@@ -1,7 +1,7 @@
 -- ~/.config/nvim/lua/plugins.lua
 return {
   'marko-cerovac/material.nvim',
-  priority = 1000,
+  -- priority = 1000,
   opts = {
     --------------------------------------------------
     -- 1. Disable italics everywhere
@@ -143,6 +143,6 @@ return {
   config = function(_, opts)
     vim.g.material_style = 'deep ocean'
     require('material').setup(opts)
-    vim.cmd.colorscheme('material')
+    -- vim.cmd.colorscheme('material')
   end,
 }
