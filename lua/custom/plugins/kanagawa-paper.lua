@@ -2,17 +2,24 @@ return {
   'thesimonho/kanagawa-paper.nvim',
   opts = {
     overrides = function(colors)
-      -- local red = '#E46876' -- Kanagawa red
       local red = '#C46A70'
       return {
         --------------------------------------------------
-        -- VARIABLES (ALL LANGUAGES)
+        -- PARAMETERS (Arguments in functions)
         --------------------------------------------------
-        ['@variable.member'] = { fg = red },
         ['@variable.parameter'] = { fg = red },
+        ['@lsp.type.parameter'] = { fg = red }, -- Force LSP parameter color
 
         --------------------------------------------------
-        -- RETURN KEYWORD (ALL LANGUAGES)
+        -- MEMBERS / PROPERTIES (obj.member)
+        --------------------------------------------------
+        ['@variable.member'] = { fg = red },
+        ['@property']        = { fg = red }, -- Fallback for some languages
+        ['@lsp.type.property'] = { fg = red }, -- Force LSP property color
+        ['@lsp.type.enumMember'] = { fg = red },
+
+        --------------------------------------------------
+        -- RETURN KEYWORD
         --------------------------------------------------
         ['@keyword.return'] = { fg = red },
       }
