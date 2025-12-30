@@ -1025,8 +1025,9 @@ require('lazy').setup({
       -- vim.cmd.colorscheme 'tokyodark'
       -- vim.cmd.colorscheme 'gruvbox-material'
       -- vim.cmd.colorscheme 'material'
-      vim.cmd.colorscheme 'kanagawa-paper'
+      -- vim.cmd.colorscheme 'kanagawa-paper'
       -- vim.cmd.colorscheme 'sonokai'
+      vim.cmd.colorscheme 'duskfox'
       -- vim.cmd.colorscheme 'oasis-abyss'
       -- vim.cmd.colorscheme 'rakis'
     end,
