@@ -90,6 +90,25 @@ I hope you enjoy your Neovim journey,
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
 P.S. You can delete this when you're done too. It's your config now! :)
 --]]
+------------------------------------------------------------------------------------
+function TogglePonyBackground()
+  if vim.g.pony_bg_enabled then
+    -- Restore original background (pick your theme default)
+    vim.cmd 'hi Normal guibg=#1e222a ctermbg=NONE'
+    vim.cmd 'hi NormalNC guibg=#1e222a ctermbg=NONE'
+    vim.g.pony_bg_enabled = false
+  else
+    -- Crayon Pony Fish background
+    vim.cmd 'hi Normal guibg=#150707 ctermbg=NONE'
+    vim.cmd 'hi NormalNC guibg=#150707 ctermbg=NONE'
+    vim.g.pony_bg_enabled = true
+  end
+end
+
+-- Command
+vim.cmd 'command! Pony lua TogglePonyBackground()'
+------------------------------------------------------------------------------------
+
 vim.o.swapfile = false
 vim.opt.conceallevel = 1
 vim.keymap.set('n', ':', function()
@@ -212,6 +231,12 @@ end
 
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
+
+-- Disable unused providers to silence checkhealth warnings
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_node_provider = 0
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
@@ -865,12 +890,12 @@ require('lazy').setup({
     cmd = { 'ConformInfo' },
     keys = {
       {
-        '<leader>f',
+        '<leader>cf',
         function()
           require('conform').format { async = true, lsp_format = 'fallback' }
         end,
         mode = '',
-        desc = '[F]ormat buffer',
+        desc = '[C]ode [F]ormat buffer',
       },
     },
     opts = {
@@ -1126,6 +1151,7 @@ require('lazy').setup({
   -- In normal mode type `<space>sh` then write `lazy.nvim-plugin`
   -- you can continue same window with `<space>sr` which resumes last telescope search
 }, {
+  rocks = { enabled = false }, -- Disable luarocks since no plugins need it
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
     -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table

@@ -1,5 +1,6 @@
 return {
   'goolord/alpha-nvim',
+  enabled = false, -- Disabled in favor of Snacks.dashboard
   priority = 1000,
   dependencies = {
     'nvim-tree/nvim-web-devicons',
