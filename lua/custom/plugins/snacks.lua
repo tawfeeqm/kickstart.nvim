@@ -14,6 +14,8 @@ return {
       enabled = true,
       timeout = 3000,
     },
+    picker = { enabled = true },
+    scope = { enabled = true },
     quickfile = { enabled = true },
     scroll = { enabled = true },
     statuscolumn = { enabled = true },
