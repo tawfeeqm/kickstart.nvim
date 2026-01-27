@@ -1,0 +1,4 @@
+0000000000000000000000000000000000000000 198370ae5b0bdcc86ac0c2610b1d74740622cb49 Tawfeeq <tawfeeqmeeri@gmail.com> 1741633682 +0100	branch: Created from HEAD
+198370ae5b0bdcc86ac0c2610b1d74740622cb49 9a4ca7c839afed3e0b820befbfa8d3898375cca3 Tawfeeq <tawfeeqmeeri@gmail.com> 1741687844 +0100	commit: added more to the ensure installed of treesitter
+9a4ca7c839afed3e0b820befbfa8d3898375cca3 019526c694d6cd1ea15b365a6a6e48961ed861ab Tawfeeq <tawfeeqmeeri@gmail.com> 1741691830 +0100	commit: Added treesitter-textobjects
+019526c694d6cd1ea15b365a6a6e48961ed861ab 1498ee4367e5ff30fcf0adada4c3b468623ef751 Tawfeeq <tawfeeqmeeri@gmail.com> 1742046858 +0100	commit: deleted completions

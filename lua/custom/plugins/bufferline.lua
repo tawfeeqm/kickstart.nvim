@@ -31,6 +31,8 @@ return {
     vim.keymap.set('n', 'bkk', ':BufferLinePickClose<CR>', { silent = true })
     vim.keymap.set('n', 'bl', ':BufferLineCloseLeft<CR>', { silent = true })
     vim.keymap.set('n', 'br', ':BufferLineCloseRight<CR>', { silent = true })
+    vim.keymap.set('n', 'bv', ':BufferLineCyclePrev<CR>', { silent = true })
+    vim.keymap.set('n', 'bn', ':BufferLineCycleNext<CR>', { silent = true })
     --  Remaps
     vim.keymap.set('n', '<leader>1', ':BufferLineGoToBuffer 1<CR>', { silent = true })
     vim.keymap.set('n', '<leader>2', ':BufferLineGoToBuffer 2<CR>', { silent = true })

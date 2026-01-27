@@ -6,12 +6,16 @@ return {
   opts = {
     bigfile = { enabled = true },
     dashboard = { enabled = true },
+    explorer = { enabled = true },
+    image = { enabled = true },
     indent = { enabled = true },
     input = { enabled = true },
     notifier = {
       enabled = true,
       timeout = 3000,
     },
+    picker = { enabled = true },
+    scope = { enabled = true },
     quickfile = { enabled = true },
     scroll = { enabled = true },
     statuscolumn = { enabled = true },
@@ -24,6 +28,13 @@ return {
     lazygit = {},
   },
   keys = {
+    {
+      '<leader>e',
+      function()
+        Snacks.explorer()
+      end,
+      desc = 'Snacks Explorer',
+    },
     {
       '<leader>z',
       function()
