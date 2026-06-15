@@ -2,14 +2,5 @@
 --  I promise not to create any merge conflicts in this directory :)
 --
 -- See the kickstart.nvim README for more information
-return {
-  {
-    'folke/noice.nvim',
-    event = 'VeryLazy',
-    opts = {},
-    dependencies = {
-      'MunifTanjim/nui.nvim',
-      'rcarriga/nvim-notify'
-    }
-  }
-}
+-- Noice now lives in its own file: lua/custom/plugins/noice.lua
+return {}
