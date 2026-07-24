@@ -10,7 +10,7 @@ return {
     lint.linters_by_ft = {
       javascript = {},
       typescript = {},
-      markdown = { 'markdownlint' },
+      markdown = { 'markdownlint-cli2' },
     }
 
     -- Create autocommand which carries out the actual linting
