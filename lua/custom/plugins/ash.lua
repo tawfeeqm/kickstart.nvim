@@ -1,1 +1,0 @@
-return { 'drewxs/ash.nvim' }

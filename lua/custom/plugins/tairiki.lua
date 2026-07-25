@@ -1,1 +1,0 @@
-return { 'deparr/tairiki.nvim'}

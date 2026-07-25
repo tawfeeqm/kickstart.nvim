@@ -1,3 +1,0 @@
-return {
-  'myypo/borrowed.nvim',
-}

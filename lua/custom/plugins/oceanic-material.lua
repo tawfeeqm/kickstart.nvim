@@ -1,1 +1,0 @@
-return { 'glepnir/oceanic-material' }

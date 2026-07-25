@@ -1,1 +1,0 @@
-return { 'timmajani/tokyonightnoir-vim' }
