@@ -838,7 +838,7 @@ require('lazy').setup({
       --  See `:help lsp-config` for information about keys and how to configure
       ---@type table<string, vim.lsp.Config>
       local servers = {
-        vtsls = {},
+        tsgo = {}, -- native Go-ported TypeScript compiler/language server (mason: tsgo)
         -- clangd = {},
         -- gopls = {},
         -- pyright = {},

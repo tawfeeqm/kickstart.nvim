@@ -1,5 +1,6 @@
 return {
   'pmizio/typescript-tools.nvim',
+  enabled = false, -- superseded by the `tsgo` LSP server (see init.lua servers table)
   dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
   config = function()
     require('typescript-tools').setup {
