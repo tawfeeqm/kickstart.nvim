@@ -89,6 +89,9 @@ P.S. You can delete this when you're done too. It's your config now! :)
 -- Core Neovim settings, leaders, options
 -- ============================================================
 do
+  -- Block cusros on insert mode
+  vim.o.guicursor = 'n-v-c-sm:block,i-ci-ve:block-blinkwait175-blinkoff150-blinkon175,r-cr-o:hor20'
+
   -- Enable faster startup by caching compiled Lua modules
   vim.loader.enable()
 
@@ -395,6 +398,11 @@ do
   -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
   vim.cmd.colorscheme 'tokyonight-night'
 
+  -- nightfox.nvim: carried over from the old lazy.nvim config. Installed alongside
+  -- tokyonight (both available via `:colorscheme`), but this is the one actually active.
+  vim.pack.add { gh 'EdenEast/nightfox.nvim' }
+  vim.cmd.colorscheme 'duskfox'
+
   -- Highlight todo, notes, etc in comments
   vim.pack.add { gh 'folke/todo-comments.nvim' }
   require('todo-comments').setup { signs = false }
@@ -437,13 +445,59 @@ do
   --  and try some other statusline plugin
   local statusline = require 'mini.statusline'
   -- Set `use_icons` to true if you have a Nerd Font
-  statusline.setup { use_icons = vim.g.have_nerd_font }
+  --
+  -- Custom `content.active`: same information as the old lualine setup
+  -- (mode, git branch/diff, diagnostics, LSP client name, filename, buffer
+  -- count, file info, location), built with mini.statusline's own sections
+  -- and highlight groups rather than lualine's hardcoded colors.
+  statusline.setup {
+    use_icons = vim.g.have_nerd_font,
+    content = {
+      active = function()
+        local mode, mode_hl = MiniStatusline.section_mode { trunc_width = 120 }
+        local git = MiniStatusline.section_git { trunc_width = 40 }
+        local diff = MiniStatusline.section_diff { trunc_width = 75 }
+        local diagnostics = MiniStatusline.section_diagnostics {
+          trunc_width = 75,
+          signs = { ERROR = ' ', WARN = ' ', INFO = ' ' },
+        }
+        local lsp = (function()
+          if MiniStatusline.is_truncated(75) then return '' end
+          local names = {}
+          for _, client in ipairs(vim.lsp.get_clients { bufnr = 0 }) do
+            table.insert(names, client.name)
+          end
+          return 'LSP:' .. (#names == 0 and 'No Active Lsp' or table.concat(names, ','))
+        end)()
+        local filename = MiniStatusline.section_filename { trunc_width = 140 }
+        local buf_count = 'Buffers: ' .. #vim.fn.getbufinfo { buflisted = 1 }
+        local fileinfo = MiniStatusline.section_fileinfo { trunc_width = 120 }
+        local location = MiniStatusline.section_location { trunc_width = 75 }
 
-  -- You can configure sections in the statusline by overriding their
-  -- default behavior. For example, here we set the section for
-  -- cursor location to LINE:COLUMN
-  ---@diagnostic disable-next-line: duplicate-set-field
-  statusline.section_location = function() return '%2l:%-2v' end
+        return MiniStatusline.combine_groups {
+          { hl = mode_hl, strings = { mode } },
+          { hl = 'MiniStatuslineDevinfo', strings = { git, diff, diagnostics } },
+          '%<',
+          { hl = 'MiniStatuslineFilename', strings = { filename, buf_count } },
+          '%=',
+          { hl = 'MiniStatuslineDevinfo', strings = { lsp } },
+          { hl = 'MiniStatuslineFileinfo', strings = { fileinfo } },
+          { hl = mode_hl, strings = { location } },
+        }
+      end,
+    },
+  }
+
+  -- Popup notifications (replaces the default silent vim.notify, which just
+  -- writes to :messages, with a floating window in the corner).
+  require('mini.notify').setup()
+  vim.notify = MiniNotify.make_notify()
+
+  -- Fuzzy picker (files, help, grep, buffers, etc. in a floating window).
+  -- NOTE: overlaps with Telescope, which is already set up below for the
+  -- same job (<leader>sf/sg/sd/...). Keeping both for now to compare; drop
+  -- whichever one loses out once you've used both for a bit.
+  require('mini.pick').setup()
 
   -- ... and there is more!
   --  Check out: https://github.com/nvim-mini/mini.nvim
@@ -693,15 +747,33 @@ do
   ---@type table<string, vim.lsp.Config>
   local servers = {
     -- clangd = {},
-    -- gopls = {},
-    -- pyright = {},
     -- rust_analyzer = {},
-    --
-    -- Some languages (like typescript) have entire language plugins that can be useful:
-    --    https://github.com/pmizio/typescript-tools.nvim
-    --
-    -- But for many setups, the LSP (`ts_ls`) will work just fine
-    -- ts_ls = {},
+
+    -- TypeScript / React
+    vtsls = {},
+    oxlint = {},
+
+    -- Python
+    basedpyright = {},
+    ruff = {},
+
+    -- Go
+    gopls = {},
+
+    -- Terraform / HCL
+    terraformls = {},
+
+    -- YAML
+    yamlls = {},
+
+    -- HTML / CSS
+    html = {},
+    cssls = {},
+
+    -- Docker / Kubernetes
+    dockerls = {},
+    docker_compose_language_service = {},
+    helm_ls = {},
 
     stylua = {}, -- Used to format Lua code
 
@@ -764,7 +836,14 @@ do
   -- You can press `g?` for help in this menu.
   local ensure_installed = vim.tbl_keys(servers or {})
   vim.list_extend(ensure_installed, {
-    -- You can add other tools here that you want Mason to install
+    'prettierd',
+    'gofumpt',
+    'goimports',
+    'golangci-lint',
+    'tflint',
+    'yamllint',
+    'sqlfluff',
+    'hadolint',
   })
 
   require('mason-tool-installer').setup { ensure_installed = ensure_installed }
@@ -787,8 +866,17 @@ do
     format_on_save = function(bufnr)
       -- You can specify filetypes to autoformat on save here:
       local enabled_filetypes = {
-        -- lua = true,
-        -- python = true,
+        javascript = true,
+        javascriptreact = true,
+        typescript = true,
+        typescriptreact = true,
+        python = true,
+        go = true,
+        terraform = true,
+        yaml = true,
+        html = true,
+        css = true,
+        sql = true,
       }
       if enabled_filetypes[vim.bo[bufnr].filetype] then
         return { timeout_ms = 500 }
@@ -802,11 +890,23 @@ do
     -- You can also specify external formatters in here.
     formatters_by_ft = {
       -- rust = { 'rustfmt' },
-      -- Conform can also run multiple formatters sequentially
-      -- python = { "isort", "black" },
-      --
-      -- You can use 'stop_after_first' to run the first available formatter from the list
-      -- javascript = { "prettierd", "prettier", stop_after_first = true },
+      javascript = { 'prettierd', 'prettier', stop_after_first = true },
+      javascriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+      typescript = { 'prettierd', 'prettier', stop_after_first = true },
+      typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+      python = { 'ruff_format' },
+      go = { 'goimports', 'gofumpt' },
+      terraform = { 'terraform_fmt' },
+      yaml = { 'prettierd', 'prettier', stop_after_first = true },
+      html = { 'prettierd', 'prettier', stop_after_first = true },
+      css = { 'prettierd', 'prettier', stop_after_first = true },
+      sql = { 'sqlfluff' },
+    },
+    formatters = {
+      -- sqlfluff exits 1 whenever any *unfixable* violation remains, even though it
+      -- still applies every fixable one and prints valid output — conform's bundled
+      -- config is missing the exit-code override other linters-as-formatters have.
+      sqlfluff = { exit_codes = { 0, 1 } },
     },
   }
 
@@ -909,7 +1009,17 @@ do
   vim.pack.add { { src = gh 'nvim-treesitter/nvim-treesitter', version = 'main' } }
 
   -- Ensure basic parsers are installed
-  local parsers = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
+  local parsers = {
+    'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc',
+    'typescript', 'tsx', 'javascript', 'jsdoc',
+    'python',
+    'go', 'gomod', 'gosum', 'gowork',
+    'terraform', 'hcl',
+    'yaml',
+    'css', 'scss',
+    'sql',
+    'dockerfile',
+  }
   require('nvim-treesitter').install(parsers)
 
   ---@param buf integer
@@ -971,17 +1081,17 @@ do
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  -- require 'kickstart.plugins.debug'
-  -- require 'kickstart.plugins.indent_line'
-  -- require 'kickstart.plugins.lint'
-  -- require 'kickstart.plugins.autopairs'
-  -- require 'kickstart.plugins.neo-tree'
-  -- require 'kickstart.plugins.gitsigns' -- adds gitsigns recommended keymaps
+  require 'kickstart.plugins.debug'
+  require 'kickstart.plugins.indent_line'
+  require 'kickstart.plugins.lint'
+  require 'kickstart.plugins.autopairs'
+  require 'kickstart.plugins.neo-tree'
+  require 'kickstart.plugins.gitsigns' -- adds gitsigns recommended keymaps
 
   -- NOTE: You can add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  -- require 'custom.plugins'
+  require 'custom.plugins'
 end
 
 -- The line beneath this is called `modeline`. See `:help modeline`
