@@ -13,6 +13,7 @@ vim.pack.add {
   'https://github.com/mason-org/mason.nvim',
   'https://github.com/jay-babu/mason-nvim-dap.nvim',
   'https://github.com/leoluz/nvim-dap-go',
+  'https://github.com/mfussenegger/nvim-dap-python',
 }
 
 -- Basic debugging keymaps, feel free to change to your liking!
@@ -42,6 +43,12 @@ require('mason-nvim-dap').setup {
   ensure_installed = {
     -- Update this to ensure that you have the debuggers for the langs you want
     'delve',
+    -- 'js' resolves to js-debug-adapter (Microsoft's vscode-js-debug). NOTE:
+    -- this only *installs* the binary. mason-nvim-dap ships no adapter
+    -- definition for it (see mappings/adapters/, which has no js.lua), so
+    -- unlike delve it is not auto-configured -- the pwa-node wiring below is
+    -- required for it to do anything.
+    'js',
   },
 }
 
@@ -93,3 +100,93 @@ require('dap-go').setup {
     detached = vim.fn.has 'win32' == 0,
   },
 }
+
+-- Python. Passing 'uv' makes the adapter launch as
+-- `uv run --with debugpy python -m debugpy.adapter`, so debugpy is fetched on
+-- demand and the debuggee runs inside the project venv -- meaning breakpoints
+-- can see your project's dependencies. Nothing to install, no venv path to
+-- hardcode. dap-python still falls back to $VIRTUAL_ENV / .venv discovery for
+-- non-uv projects.
+require('dap-python').setup 'uv'
+
+-- A pytest file cannot be debugged with the plain 'file' config: running
+-- `python tests/test_x.py` only defines the test functions and exits, so no
+-- breakpoint is ever reached. These launch it under pytest instead.
+-- dap-python picks pytest automatically from `[tool.pytest]` in pyproject.toml.
+table.insert(require('dap').configurations.python, 1, {
+  type = 'python',
+  request = 'launch',
+  name = 'pytest: current file',
+  module = 'pytest',
+  args = { '${file}', '-s' }, -- -s so print() output reaches the console
+  console = 'integratedTerminal',
+  cwd = '${workspaceFolder}',
+})
+
+-- Debug a single test rather than the whole file.
+vim.keymap.set('n', '<leader>dm', function() require('dap-python').test_method() end, { desc = 'Debug: Test [M]ethod under cursor' })
+vim.keymap.set('n', '<leader>dc', function() require('dap-python').test_class() end, { desc = 'Debug: Test [C]lass' })
+vim.keymap.set('v', '<leader>ds', function() require('dap-python').debug_selection() end, { desc = 'Debug: [S]election' })
+
+-- Evaluate expressions in the paused frame: call functions, test hypotheses,
+-- inspect anything in scope -- without editing the file or re-running.
+vim.keymap.set('n', '<leader>dr', function() dap.repl.toggle() end, { desc = 'Debug: Toggle [R]EPL' })
+
+-- Stop at the `raise` itself rather than after the fact, with the offending
+-- state still in scope. Written into dap.defaults (read at session start, see
+-- session.lua) so it survives across sessions, and applied live if one is
+-- already running.
+vim.keymap.set('n', '<leader>dx', function()
+  local enabled = type(dap.defaults.fallback.exception_breakpoints) == 'table'
+  dap.defaults.fallback.exception_breakpoints = enabled and 'default' or { 'raised', 'uncaught' }
+  if dap.session() then
+    dap.set_exception_breakpoints(dap.defaults.fallback.exception_breakpoints)
+  end
+  vim.notify('Exception breakpoints: ' .. (enabled and 'default (uncaught only)' or 'raised + uncaught'))
+end, { desc = 'Debug: Toggle e[X]ception breakpoints' })
+
+-- Node / TypeScript. js-debug-adapter speaks DAP over a socket rather than
+-- stdio, so it is a 'server' adapter: nvim-dap picks a free port, substitutes
+-- it into ${port}, and the executable is spawned listening on it.
+dap.adapters['pwa-node'] = {
+  type = 'server',
+  host = '127.0.0.1',
+  port = '${port}',
+  executable = {
+    command = vim.fn.stdpath 'data' .. '/mason/bin/js-debug-adapter',
+    args = { '${port}' },
+  },
+}
+
+for _, ft in ipairs { 'javascript', 'typescript', 'javascriptreact', 'typescriptreact' } do
+  dap.configurations[ft] = {
+    {
+      type = 'pwa-node',
+      request = 'launch',
+      name = 'Launch file (node)',
+      program = '${file}',
+      cwd = '${workspaceFolder}',
+      sourceMaps = true,
+    },
+    {
+      -- Runs .ts directly. Needs tsx available (npx fetches it on demand);
+      -- without a loader, node cannot execute TypeScript.
+      type = 'pwa-node',
+      request = 'launch',
+      name = 'Launch file (tsx)',
+      program = '${file}',
+      cwd = '${workspaceFolder}',
+      runtimeExecutable = 'npx',
+      runtimeArgs = { 'tsx' },
+      sourceMaps = true,
+    },
+    {
+      type = 'pwa-node',
+      request = 'attach',
+      name = 'Attach to process',
+      processId = function() return require('dap.utils').pick_process() end,
+      cwd = '${workspaceFolder}',
+      sourceMaps = true,
+    },
+  }
+end

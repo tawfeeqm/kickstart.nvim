@@ -399,9 +399,21 @@ do
   vim.cmd.colorscheme 'tokyonight-night'
 
   -- nightfox.nvim: carried over from the old lazy.nvim config. Installed alongside
-  -- tokyonight (both available via `:colorscheme`), but this is the one actually active.
+  -- tokyonight, both available via `:colorscheme`.
   vim.pack.add { gh 'EdenEast/nightfox.nvim' }
-  vim.cmd.colorscheme 'duskfox'
+
+  -- dark2026: installed but not activated -- reach it with `:colorscheme dark2026`.
+  vim.pack.add { gh 'D0nw0r/dark2026.nvim' }
+
+  -- cendre: this is the one actually active. setup() must come before the
+  -- colorscheme call -- `colors/cendre.lua` is just `require('cendre').load()`,
+  -- and load() reads the background option out of the config set by setup().
+  vim.pack.add { gh 'Aejkatappaja/cendre' }
+  require('cendre').setup {
+    background = 'hard', -- 'hard' | 'medium' | 'soft'
+    italic_virtual_text = false,
+  }
+  vim.cmd.colorscheme 'cendre'
 
   -- Highlight todo, notes, etc in comments
   vim.pack.add { gh 'folke/todo-comments.nvim' }
@@ -490,7 +502,12 @@ do
 
   -- Popup notifications (replaces the default silent vim.notify, which just
   -- writes to :messages, with a floating window in the corner).
-  require('mini.notify').setup()
+  -- LSP progress is handled by fidget.nvim below; leaving it on here too
+  -- means a popup per keystroke from servers like basedpyright, which open
+  -- a new progress token on every didChange.
+  require('mini.notify').setup {
+    lsp_progress = { enable = false },
+  }
   vim.notify = MiniNotify.make_notify()
 
   -- Fuzzy picker (files, help, grep, buffers, etc. in a floating window).
