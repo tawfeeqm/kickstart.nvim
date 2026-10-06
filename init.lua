@@ -140,9 +140,6 @@ do
   -- Keep signcolumn on by default
   vim.o.signcolumn = 'yes'
 
-  -- Decrease update time
-  vim.o.updatetime = 250
-
   -- Decrease mapped sequence wait time
   vim.o.timeoutlen = 300
 
@@ -253,6 +250,29 @@ do
     desc = 'Highlight when yanking (copying) text',
     group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
     callback = function() vim.hl.on_yank() end,
+  })
+end
+
+-- ============================================================
+-- SECTION 2A: EXTERNAL FILE CHANGES
+-- Reload clean buffers when their files change outside Neovim
+-- ============================================================
+do
+  -- `autoread` is enabled by default in Neovim; keep it explicit here to
+  -- document the intended behavior. `updatetime` controls CursorHold.
+  vim.o.autoread = true
+  vim.o.updatetime = 1000
+
+  local external_changes = vim.api.nvim_create_augroup('check-external-changes', { clear = true })
+
+  vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter', 'CursorHold', 'TermLeave' }, {
+    group = external_changes,
+    command = 'checktime',
+  })
+
+  vim.api.nvim_create_autocmd('FileChangedShellPost', {
+    group = external_changes,
+    callback = function() vim.notify('File changed on disk — buffer reloaded', vim.log.levels.WARN) end,
   })
 end
 
@@ -391,29 +411,13 @@ do
     styles = {
       comments = { italic = false }, -- Disable italics in comments
     },
+    on_highlights = function(highlights, colors)
+      highlights['@keyword.return'] = { fg = colors.red }
+      highlights.Cursor = { fg = colors.bg, bg = colors.fg }
+      highlights.lCursor = { fg = colors.bg, bg = colors.fg }
+    end,
   }
-
-  -- Load the colorscheme here.
-  -- Like many other themes, this one has different styles, and you could load
-  -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-  vim.cmd.colorscheme 'tokyonight-night'
-
-  -- nightfox.nvim: carried over from the old lazy.nvim config. Installed alongside
-  -- tokyonight, both available via `:colorscheme`.
-  vim.pack.add { gh 'EdenEast/nightfox.nvim' }
-
-  -- dark2026: installed but not activated -- reach it with `:colorscheme dark2026`.
-  vim.pack.add { gh 'D0nw0r/dark2026.nvim' }
-
-  -- cendre: this is the one actually active. setup() must come before the
-  -- colorscheme call -- `colors/cendre.lua` is just `require('cendre').load()`,
-  -- and load() reads the background option out of the config set by setup().
-  vim.pack.add { gh 'Aejkatappaja/cendre' }
-  require('cendre').setup {
-    background = 'hard', -- 'hard' | 'medium' | 'soft'
-    italic_virtual_text = false,
-  }
-  vim.cmd.colorscheme 'cendre'
+  -- vim.cmd.colorscheme 'tokyonight-storm'
 
   -- Highlight todo, notes, etc in comments
   vim.pack.add { gh 'folke/todo-comments.nvim' }
@@ -1027,13 +1031,31 @@ do
 
   -- Ensure basic parsers are installed
   local parsers = {
-    'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc',
-    'typescript', 'tsx', 'javascript', 'jsdoc',
+    'bash',
+    'c',
+    'diff',
+    'html',
+    'lua',
+    'luadoc',
+    'markdown',
+    'markdown_inline',
+    'query',
+    'vim',
+    'vimdoc',
+    'typescript',
+    'tsx',
+    'javascript',
+    'jsdoc',
     'python',
-    'go', 'gomod', 'gosum', 'gowork',
-    'terraform', 'hcl',
+    'go',
+    'gomod',
+    'gosum',
+    'gowork',
+    'terraform',
+    'hcl',
     'yaml',
-    'css', 'scss',
+    'css',
+    'scss',
     'sql',
     'dockerfile',
   }
