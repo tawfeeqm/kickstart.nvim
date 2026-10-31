@@ -1,6 +1,7 @@
 vim.pack.add {
   'https://github.com/rebelot/kanagawa.nvim',
   'https://github.com/marko-cerovac/material.nvim',
+  'https://github.com/EdenEast/nightfox.nvim',
 }
 
 require('kanagawa').setup {
@@ -49,7 +50,7 @@ end
 
 vim.api.nvim_create_autocmd('ColorScheme', {
   group = vim.api.nvim_create_augroup('plain-theme-text', { clear = true }),
-  pattern = { 'kanagawa*', 'material*' },
+  pattern = { 'kanagawa*', 'material*', 'nightfox*' },
   callback = function()
     remove_font_styles()
     -- Some themes define captures immediately after ColorScheme finishes.
@@ -57,4 +58,4 @@ vim.api.nvim_create_autocmd('ColorScheme', {
   end,
 })
 
-vim.cmd.colorscheme 'material-darker'
+vim.cmd.colorscheme 'duskfox'
